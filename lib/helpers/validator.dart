@@ -12,12 +12,21 @@ class Validator {
   }
 
   static String isPhoneValid(String text) {
-    String isTextEmpty = isEmptyText(text);
+    String isEmptyTextResult = isEmptyText(text);
 
-    if (isTextEmpty != null) return isTextEmpty;
-    if (!RegExp(r'^\([1-9]{2}\) [9]{0,1}[6-9]{1}[0-9]{3}\-[0-9]{4}$')
+    if (isEmptyTextResult != null) return isEmptyTextResult;
+    if (!RegExp(
+            r'^(?:(?:\+|00)?(55)\s?)?(?:\(?([1-9][0-9])\)?\s?)?(?:((?:9\d|[2-9])\d{3})\-?(\d{4}))$')
         .hasMatch(text)) return 'Número de telefone inválido';
 
+    return null;
+  }
+
+  static String isBorrowedDateValid(DateTime dateTime) {
+    String isEmptyDateResult = isEmptyDate(dateTime);
+    if (isEmptyDateResult != null) return isEmptyDateResult;
+    if (dateTime.isAfter(DateTime.now()))
+      return "A data deve ser menor ou igual a data de hoje";
     return null;
   }
 }

@@ -1,7 +1,6 @@
 import 'package:borrowed_stuff/helpers/validator.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:borrowed_stuff/components/back_dialog.dart';
@@ -124,7 +123,7 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
         _currentStuff.loanDate = date;
       },
       validator: (date) {
-        return Validator.isEmptyDate(date);
+        return Validator.isBorrowedDateValid(date);
       },
     );
   }
@@ -175,6 +174,13 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
         setState(() {
           _currentStuff.phone = value;
         });
+      },
+      onChanged: (value) {
+        if (_phoneMask.getUnmaskedText().length <= 9) {
+          _phoneMask.updateMask("(##) ####-####");
+        } else {
+          _phoneMask.updateMask("(##) #####-#####");
+        }
       },
       controller: _phoneController,
       inputFormatters: [_phoneMask],
