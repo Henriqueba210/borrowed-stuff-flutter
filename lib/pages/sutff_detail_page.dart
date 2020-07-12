@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:borrowed_stuff/components/back_dialog.dart';
 import 'package:borrowed_stuff/components/photo_container.dart';
 import 'package:borrowed_stuff/models/stuff.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class StuffDetailPage extends StatefulWidget {
   final Stuff editedStuff;
@@ -25,6 +26,9 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
   final _descriptionController = TextEditingController();
   final _nameController = TextEditingController();
   final _dateFormat = DateFormat('dd/MM/yyyy');
+  final _phoneController = TextEditingController();
+  final _phoneMask = new MaskTextInputFormatter(
+      mask: '(##) #####-#####', filter: {"#": RegExp(r'[0-9]')});
 
   var _currentStuff = Stuff();
 
@@ -36,6 +40,7 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
       _dateController.text = _dateFormat.format(_currentStuff.loanDate);
       _descriptionController.text = _currentStuff.description;
       _nameController.text = _currentStuff.contactName;
+      _phoneController.text = _currentStuff.phone;
     }
   }
 
@@ -90,6 +95,7 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
           _buildDateInputField(),
           _buildDescriptionInputField(),
           _buildNameInputField(),
+          _buildPhoneInputField(),
           _buildConfirmButton(),
         ],
       ),
@@ -154,6 +160,25 @@ class _StuffDetailPageState extends State<StuffDetailPage> {
       controller: _nameController,
       validator: (value) {
         return Validator.isEmptyText(value);
+      },
+    );
+  }
+
+  _buildPhoneInputField({Function(String) onSaved}) {
+    return TextFormField(
+      decoration: InputDecoration(
+        icon: Icon(Icons.phone),
+        labelText: 'Telefone do contato',
+      ),
+      onSaved: (value) {
+        setState(() {
+          _currentStuff.phone = value;
+        });
+      },
+      controller: _phoneController,
+      inputFormatters: [_phoneMask],
+      validator: (value) {
+        return Validator.isPhoneValid(value);
       },
     );
   }

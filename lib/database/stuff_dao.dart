@@ -10,9 +10,10 @@ class StuffDao {
   Future<Database> get _db async => await AppDatabase.instance.database;
 
   Future create(Stuff stuff) async {
-    stuff.id = await _stuffFolder.add(await _db, stuff.toMap());  
+    stuff.id = await _stuffFolder.add(await _db, stuff.toMap());
 
-    final finder = Finder(filter: Filter.equals('description', stuff.description));
+    final finder =
+        Finder(filter: Filter.equals('description', stuff.description));
     await _stuffFolder.update(await _db, stuff.toMap(), finder: finder);
   }
 
