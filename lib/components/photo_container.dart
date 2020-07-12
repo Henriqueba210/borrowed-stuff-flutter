@@ -15,15 +15,15 @@ class PhotoContainer extends StatefulWidget {
 }
 
 class _PhotoContainerState extends State<PhotoContainer> {
-  File _image;
+  PickedFile _image;
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker().getImage(source: ImageSource.camera);
 
     setState(() {
       _image = image;
       if (widget.onChanged != null) {
-        widget.onChanged(image.path ?? '');
+        widget.onChanged(image?.path ?? '');
       }
     });
   }
@@ -32,7 +32,7 @@ class _PhotoContainerState extends State<PhotoContainer> {
   void initState() {
     super.initState();
     if (widget.initialPhotoPath != null)
-      _image = File(widget.initialPhotoPath);
+      _image = PickedFile(widget.initialPhotoPath);
   }
 
   @override
@@ -51,7 +51,9 @@ class _PhotoContainerState extends State<PhotoContainer> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
-              child: _image == null ? Text('Sem foto.') : Image.file(_image),
+              child: _image == null
+                  ? Text('Sem foto.')
+                  : DecorationImage(image: FileImage(File(_image.path))),
             ),
           ),
         ),
