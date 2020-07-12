@@ -16,8 +16,11 @@ dependencies:
   # Data e internacionalização
   datetime_picker_formfield: ^1.0.0
   intl: ^0.16.0
+  # brasil_fields: ^0.3.0 teria de testar com outra versão talvez pois com essa aí quando usei a de telefone a digitação não funcionava corretamente
+  mask_text_input_formatter: ^1.0.7 # Achei essa implementação usando máscara que funcionou melhor
   flutter_localizations:
     sdk: flutter
+
 
   # Banco de dados (produção)
   path_provider: ^1.6.5
