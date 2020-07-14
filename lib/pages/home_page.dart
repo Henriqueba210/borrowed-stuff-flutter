@@ -6,6 +6,7 @@ import 'package:borrowed_stuff/models/stuff.dart';
 import 'package:borrowed_stuff/pages/sutff_detail_page.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final _controller = HomeController();
   bool _loading = true;
-
+  Tween<Offset> tween = Tween(begin: Offset.zero, end: Offset(0, 1));
   @override
   void initState() {
     super.initState();
@@ -54,18 +55,25 @@ class _HomePageState extends State<HomePage> {
       return CenteredMessage('Vazio', icon: Icons.warning);
     }
 
-    return ListView.builder(
-      itemCount: _controller.stuffList.length,
-      itemBuilder: (context, index) {
+    return AnimatedList(
+      key: _controller.animatedListKey,
+      initialItemCount: _controller.stuffList.length,
+      itemBuilder: (context, index, animation) {
         final stuff = _controller.stuffList[index];
-        return StuffCard(
-          stuff: stuff,
-          onDelete: () {
-            _deleteStuff(stuff);
-          },
-          onEdit: () {
-            _editStuff(index, stuff);
-          },
+        return SizeTransition(
+          sizeFactor: animation,
+          child: StuffCard(
+            stuff: stuff,
+            onCalled: () {
+              _telefonedStuff(stuff);
+            },
+            onDelete: () {
+              _deleteStuff(stuff);
+            },
+            onEdit: () {
+              _editStuff(index, stuff);
+            },
+          ),
         );
       },
     );
@@ -127,5 +135,28 @@ class _HomePageState extends State<HomePage> {
       message: "${stuff.description} excluido com sucesso.",
       duration: Duration(seconds: 2),
     )..show(context);
+  }
+
+  _telefonedStuff(Stuff stuff) {
+    try {
+      _launchURL(stuff.phone);
+    } catch (e) {
+      Flushbar(
+        title: e,
+        backgroundColor: Colors.red,
+        message: "Tente novamente mais tarde",
+        duration: Duration(seconds: 2),
+      )..show(context);
+    }
+  }
+
+  _launchURL(String telefoneEnviar) async {
+    String url = 'tel:$telefoneEnviar';
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Não foi possível telefonar para $url';
+    }
   }
 }

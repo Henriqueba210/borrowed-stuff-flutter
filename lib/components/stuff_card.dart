@@ -8,11 +8,13 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 class StuffCard extends StatelessWidget {
   final Stuff stuff;
   final Function onEdit;
+  final Function onCalled;
   final Function onDelete;
 
   StuffCard({
     Key key,
     this.stuff,
+    this.onCalled,
     this.onEdit,
     this.onDelete,
   }) : super(key: key);
@@ -45,6 +47,12 @@ class StuffCard extends StatelessWidget {
       actionExtentRatio: 0.25,
       child: _buildStuffCard(stuff),
       actions: <Widget>[
+        IconSlideAction(
+          caption: 'Telefonar',
+          color: Colors.green,
+          icon: Icons.phone,
+          onTap: onCalled,
+        ),
         IconSlideAction(
           caption: 'Editar',
           color: Colors.blue,
